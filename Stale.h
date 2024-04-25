@@ -8,14 +8,14 @@
 #include <string>
 using namespace std;
 
-#define TRUE 1
-#define FALSE 0
 #define MAXSIZE 11
+#define BLUE 2
+#define RED 1
 
 string sizeString = "BOARD_SIZE";
 string pNumString = "PAWNS_NUMBER";
 string bCorrectString = "IS_BOARD_CORRECT";
-string GameOverString = "IS_GAME_OVER";
+string gameOverString = "IS_GAME_OVER";
 string bPossibleString = "IS_BOARD_POSSIBLE";
 string red1NaiveString = "CAN_RED_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT";
 string blue1NaiveString = "CAN_BLUE_WIN_IN_1_MOVE_WITH_NAIVE_OPPONENT";
