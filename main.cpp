@@ -7,16 +7,17 @@ using namespace std;
 
 int main() {
     char ch;
-    int nastepnaLinia = FALSE;
-    int input = TRUE;
-    int inputPlansza = TRUE;
-    int inputPolecenia = FALSE;
+    bool nastepnaLinia = false;
+    bool inputPlansza = true;
+    bool inputPolecenia = false;
+    bool koniecRzedow = false;
     string polecenie;
     int iloscB = 0, iloscR = 0;
 
     int iloscIinii = 0;
     int kolumna = 0;
     int zmiennaLinii = 0;
+    int zmiennaKresek = 0;
 
     char hexWTablicy[MAXSIZE][MAXSIZE];
 
@@ -29,65 +30,67 @@ int main() {
 
     //wypelnianie planszy na tablice 2d
 
-    while (input) {
-        if (inputPlansza) {
-            if (ch = cin.get()) {
-
-                if (ch == '-') {
-                    if (nastepnaLinia) nastepnaLinia = FALSE;
-                } else if (ch == '<') {
-                    if (nastepnaLinia) {
-                        iloscIinii = zmiennaLinii;
-                        nastepnaLinia = FALSE;
-                    }
-                    kolumna++;
-
-                } else if (ch == 'b') {
-                    iloscB++;
-                    hexWTablicy[kolumna - 1][zmiennaLinii] = 'b';
-                } else if (ch == 'r') {
-                    iloscR++;
-                    hexWTablicy[kolumna - 1][zmiennaLinii] = 'r';
-                } else if (ch == '\n') {
-                    kolumna = 0;
-                    zmiennaLinii++;
-                    nastepnaLinia = TRUE;
-                } else if (ch == '>') {
-                    if (hexWTablicy[kolumna - 1][zmiennaLinii] != 'r' &&
-                        hexWTablicy[kolumna - 1][zmiennaLinii] != 'b')
-                        hexWTablicy[kolumna - 1][zmiennaLinii] = 'n';
-                }
-
-                if (iloscIinii != 0 && iloscIinii * 2 + 1 == zmiennaLinii) {
-                    inputPlansza = FALSE;
-                    inputPolecenia = TRUE;
-                }
-            }
-            else break;
+    while (cin >> ch) {
+        if (ch == '-' && inputPolecenia) {
+            inputPolecenia = false;
+            inputPlansza = true;
+            iloscIinii = 0;
+            kolumna = 0;
+            zmiennaLinii = 0;
+            iloscB = 0;
+            iloscR = 0;
+            nastepnaLinia = false;
+            zmiennaKresek = 0;
         }
 
+        //input plansyz i danych
+        if (inputPlansza) {
+            if (ch == '-') {
+                zmiennaKresek++;
+            }
+            else if (ch == '<') {
+                if (zmiennaKresek == 2 && !koniecRzedow) {
+                    zmiennaLinii++;
+                    iloscIinii = zmiennaLinii;
+                    koniecRzedow = true;
+                }
+                else if (zmiennaKresek > 2) zmiennaLinii++;
+                zmiennaKresek = 0;
+                kolumna++;
+            }
+            else if (ch == 'b') {
+                iloscB++;
+                hexWTablicy[kolumna - 1][zmiennaLinii] = 'b';
+            }
+            else if (ch == 'r') {
+                iloscR++;
+                hexWTablicy[kolumna - 1][zmiennaLinii] = 'r';
+            }
+            else if (ch == '>') {
+                if (hexWTablicy[kolumna - 1][zmiennaLinii] != 'r' && hexWTablicy[kolumna - 1][zmiennaLinii] != 'b') {
+                    hexWTablicy[kolumna - 1][zmiennaLinii] = 'n';
+                }
+            }
+
+            if (iloscIinii != 0 && iloscIinii * 2 + 1 == zmiennaLinii) {
+                inputPlansza = FALSE;
+                inputPolecenia = TRUE;
+            }
+        }
+
+        //input polecen
         if (inputPolecenia) {
-            getline (cin,polecenie);
-            if(cin.eof()) break;
+            polecenie += ch;
 
             if (polecenie == sizeString){
                 cout << iloscIinii << endl << endl;
+                polecenie = "";
             }
             else if (polecenie == pNumString){
                 cout << iloscB + iloscR << std::endl << std::endl;
+                polecenie = "";
             }
             else if (polecenie == bCorrectString){
-
-            }
-            else {
-                inputPolecenia = FALSE;
-                inputPlansza = TRUE;
-                iloscIinii = 0;
-                kolumna = 0;
-                zmiennaLinii = 0;
-                iloscB = 0;
-                iloscR = 0;
-                nastepnaLinia = FALSE;
             }
         }
 
