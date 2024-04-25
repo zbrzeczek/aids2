@@ -31,6 +31,13 @@ int main() {
     //wypelnianie planszy na tablice 2d
 
     while (cin >> ch) {
+
+        if (ch <= 'Z' && ch >= 'A' && inputPlansza) {
+            inputPlansza = false;
+            inputPolecenia = true;
+            polecenie = "";
+        }
+
         if (ch == '-' && inputPolecenia) {
             inputPolecenia = false;
             inputPlansza = true;
@@ -41,6 +48,7 @@ int main() {
             iloscR = 0;
             nastepnaLinia = false;
             zmiennaKresek = 0;
+            koniecRzedow = false;
         }
 
         //input plansyz i danych
@@ -49,14 +57,18 @@ int main() {
                 zmiennaKresek++;
             }
             else if (ch == '<') {
-                if (zmiennaKresek == 2 && !koniecRzedow) {
+                if (zmiennaKresek > 1) kolumna = 1;
+                else kolumna++;
+
+                if ((zmiennaKresek == 2 || zmiennaKresek == 3) && !koniecRzedow) {
                     zmiennaLinii++;
                     iloscIinii = zmiennaLinii;
                     koniecRzedow = true;
                 }
-                else if (zmiennaKresek > 2) zmiennaLinii++;
+                else if (zmiennaKresek > 3) {
+                    zmiennaLinii++;
+                }
                 zmiennaKresek = 0;
-                kolumna++;
             }
             else if (ch == 'b') {
                 iloscB++;
@@ -71,13 +83,8 @@ int main() {
                     hexWTablicy[kolumna - 1][zmiennaLinii] = 'n';
                 }
             }
-
-            if (iloscIinii != 0 && iloscIinii * 2 + 1 == zmiennaLinii) {
-                inputPlansza = FALSE;
-                inputPolecenia = TRUE;
-            }
         }
-
+        //cout << ch;
         //input polecen
         if (inputPolecenia) {
             polecenie += ch;
@@ -90,7 +97,8 @@ int main() {
                 cout << iloscB + iloscR << std::endl << std::endl;
                 polecenie = "";
             }
-            else if (polecenie == bCorrectString){
+            else {
+
             }
         }
 
