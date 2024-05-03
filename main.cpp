@@ -2,20 +2,22 @@
 #include <string>
 #include <stack>
 
+#include "Board.h"
 #include "Stale.h"
 
 using namespace std;
 
-int isGameOverFunction(char tablicaKonc[MAXSIZE][MAXSIZE], int iloscLinii){
+int isGameOverFunction(Board *plansza){
     char tablica[MAXSIZE][MAXSIZE];
+    int linie = plansza->getLinie();
 
-    for (int i = 0; i<iloscLinii; i++){
-        for (int j = 0; j<iloscLinii; j++){
-            tablica[i][j] = tablicaKonc[i][j];
+    for (int i = 0; i< linie; i++){
+        for (int j = 0; j< linie; j++){
+            tablica[i][j] = plansza->getPole(i, j);
         }
     }
 
-    if (iloscLinii == 1){
+    if (linie == 1){
         if (tablica[0][0] == 'b') return BLUE;
         else if (tablica[0][0] == 'r') return RED;
         else return false;
@@ -32,19 +34,19 @@ int isGameOverFunction(char tablicaKonc[MAXSIZE][MAXSIZE], int iloscLinii){
     Point pozycjaBlue;
     Point pozycja;
     //najpeirw czerwone jest sprawdzane
-    for (int i = 0; i < iloscLinii; i ++){
+    for (int i = 0; i < linie; i ++){
 
         //sprawdzenie dolnej krawedzi dla czerwonego
-        if (tablica[iloscLinii-1][i] == 'r') {
-            tablica[iloscLinii-1][i] = 'N';
-            if (tablica[iloscLinii-2][i] == 'r'){
+        if (tablica[linie-1][i] == 'r') {
+            tablica[linie-1][i] = 'N';
+            if (tablica[linie-2][i] == 'r'){
                 pozycjaRed.x = i;
-                pozycjaRed.y = iloscLinii-2;
+                pozycjaRed.y = linie-2;
                 stosPktRed.push(pozycjaRed);
             }
-            else if (i+1 < iloscLinii && tablica[iloscLinii-2][i+1] == 'r'){
+            else if (i+1 < linie && tablica[linie-2][i+1] == 'r'){
                 pozycjaRed.x = i+1;
-                pozycjaRed.y = iloscLinii-2;
+                pozycjaRed.y = linie-2;
                 stosPktRed.push(pozycjaRed);
             }
         }
@@ -80,7 +82,7 @@ int isGameOverFunction(char tablicaKonc[MAXSIZE][MAXSIZE], int iloscLinii){
         }
         else if (!stosPktBlue.empty()){
             pozycja = stosPktBlue.top();
-            if (pozycja.x == iloscLinii-1) {
+            if (pozycja.x == linie-1) {
                 return BLUE;
             }
             stosPktBlue.pop();
@@ -96,17 +98,17 @@ int isGameOverFunction(char tablicaKonc[MAXSIZE][MAXSIZE], int iloscLinii){
         //musisz dac jakas zmienna na y zeby nie zmieniac za kazdym raze
         // jezeli stos jest pusty a nie drugi koniec to falsz
 
-        if (pozycja.x + zmiennaX < iloscLinii && pozycja.y - 1 + zmiennaY >= 0 && tablica[pozycja.y - 1 + zmiennaY][pozycja.x + zmiennaX] == sprawdzanie){
+        if (pozycja.x + zmiennaX < linie && pozycja.y - 1 + zmiennaY >= 0 && tablica[pozycja.y - 1 + zmiennaY][pozycja.x + zmiennaX] == sprawdzanie){
             przetrzymujaca.x = pozycja.x + zmiennaX;
             przetrzymujaca.y = pozycja.y - 1 + zmiennaY;
             stosPkt->push(przetrzymujaca);
         }
-        if (pozycja.y - 1 >= 0 && pozycja.x + 1 < iloscLinii && tablica[pozycja.y - 1][pozycja.x + 1] == sprawdzanie){
+        if (pozycja.y - 1 >= 0 && pozycja.x + 1 < linie && tablica[pozycja.y - 1][pozycja.x + 1] == sprawdzanie){
             przetrzymujaca.x = pozycja.x + 1;
             przetrzymujaca.y = pozycja.y - 1;
             stosPkt->push(przetrzymujaca);
         }
-        if (pozycja.x + 1 - zmiennaX < iloscLinii  && pozycja.y + zmiennaY  < iloscLinii &&  tablica[pozycja.y + zmiennaY][pozycja.x + 1 - zmiennaX] == sprawdzanie){
+        if (pozycja.x + 1 - zmiennaX < linie  && pozycja.y + zmiennaY  < linie &&  tablica[pozycja.y + zmiennaY][pozycja.x + 1 - zmiennaX] == sprawdzanie){
             przetrzymujaca.x = pozycja.x + 1 - zmiennaX;
             przetrzymujaca.y = pozycja.y + zmiennaY;
             stosPkt->push(przetrzymujaca);
@@ -116,12 +118,12 @@ int isGameOverFunction(char tablicaKonc[MAXSIZE][MAXSIZE], int iloscLinii){
             przetrzymujaca.y = pozycja.y - zmiennaY;
             stosPkt->push(przetrzymujaca);
         }
-        if (pozycja.y + 1 < iloscLinii && pozycja.x - zmiennaX >= 0 && tablica[pozycja.y + 1][pozycja.x - zmiennaX] == sprawdzanie){
+        if (pozycja.y + 1 < linie && pozycja.x - zmiennaX >= 0 && tablica[pozycja.y + 1][pozycja.x - zmiennaX] == sprawdzanie){
             przetrzymujaca.x = pozycja.x - zmiennaX;
             przetrzymujaca.y = pozycja.y + 1;
             stosPkt->push(przetrzymujaca);
         }
-        if (pozycja.x - 1 >= 0 && pozycja.y + 1 - zmiennaY <iloscLinii && tablica[pozycja.y + 1 - zmiennaY][pozycja.x - 1] == sprawdzanie){
+        if (pozycja.x - 1 >= 0 && pozycja.y + 1 - zmiennaY < linie && tablica[pozycja.y + 1 - zmiennaY][pozycja.x - 1] == sprawdzanie){
             przetrzymujaca.x = pozycja.x - 1;
             przetrzymujaca.y = pozycja.y + 1 - zmiennaY;
             stosPkt->push(przetrzymujaca);
@@ -132,23 +134,85 @@ int isGameOverFunction(char tablicaKonc[MAXSIZE][MAXSIZE], int iloscLinii){
     return false;
 }
 
+bool isBoardPossible(Board *plansza) {
+    char zmienna;
+    int zmiennaGO = 0;
+    char tablica[MAXSIZE][MAXSIZE];
+    int iloscPionkowZmienna, zmiennaIloscWygranychPossible = 0;
+
+    for (int i = 0; i< plansza->getLinie(); i++){
+        for (int j = 0; j< plansza->getLinie(); j++){
+            tablica[i][j] = plansza->getPole(i, j);
+        }
+    }
+
+    if (plansza->getCorrect()){
+        if (plansza->getGameOver() > 0){
+            if ((plansza->getGameOver() == BLUE && plansza->getB()==plansza->getR()) || (plansza->getGameOver()== RED && plansza->getB()==plansza->getR()-1)){
+                zmienna = (plansza->getGameOver() == BLUE) ? 'b' : 'r';
+                iloscPionkowZmienna = (plansza->getGameOver() == BLUE) ? plansza->getB() : plansza->getR();
+                for (int i =0; i < plansza->getLinie(); i++){
+                    for (int j =0; j < plansza->getLinie(); j++){
+                        if (plansza->getPole(i, j) == zmienna){
+                            plansza->setPole('N', i, j);
+                            zmiennaGO = isGameOverFunction(plansza);
+                            if (zmiennaGO > 0) zmiennaIloscWygranychPossible++;
+                            plansza->setPole(zmienna, i, j);
+                        }
+                    }
+                }
+                if (zmiennaIloscWygranychPossible == iloscPionkowZmienna) return false;
+                else return true;
+            }
+            else return false;
+        }
+        else return true;
+    }
+    else return false;
+}
+
+bool naive(Board *plansza, int depth, int player){
+    char pionek = (player==RED) ? 'r' : 'b';
+    int winner = isGameOverFunction(plansza);
+
+    if (depth == 0){
+        return (winner == player);
+    }
+    if (winner == player){
+        return false;
+    }
+
+    for (int i = 0; i < plansza->getLinie(); i++){
+        for (int j = 0; j < plansza->getLinie(); j++) {
+
+            if (plansza->getPole(i, j) != 'N') {
+                continue;
+            }
+            plansza->setPole(pionek, i, j);
+
+            if ((naive(plansza, depth-1, player))) {
+                plansza->setPole('N', i, j);
+                return true;
+            }
+            plansza->setPole('N', i, j);
+        }
+    }
+    return false;
+}
+
 int main() {
-    char ch, zmienna;
+    char ch;
     bool inputPlansza = true;
     bool inputPolecenia = false;
     bool koniecRzedow = false;
-    bool isBoardCorrect = false;
-    int isGameOver, iloscPionkowZmienna;
-    string polecenie;
-    int iloscB = 0, iloscR = 0, zmiennaIloscWygranychPossible = 0;
-
-    int iloscIinii = 0;
+    int depth, kolej, iloscruchow;
     int kolumna = 0;
+    string polecenie;
+
     int zmiennaLinii = 0;
     int zmiennaKresek = 0;
 
     char hexWTablicy[2 * MAXSIZE-1][2 * MAXSIZE -1];
-    char tablicaKonc[MAXSIZE][MAXSIZE];
 
     //wypelnienie tablicy pustymi polami
     for (int i = 0; i < MAXSIZE * 2 - 1; i++){
@@ -156,11 +220,8 @@ int main() {
             hexWTablicy[j][i] = ' ';
         }
     }
-    for (int i = 0; i < MAXSIZE; i++){
-        for (int j = 0; j < MAXSIZE; j++){
-            tablicaKonc[j][i] = ' ';
-        }
-    }
+
+    Board nowaPlansza;
 
     //wypelnianie planszy na tablice 2d
 
@@ -170,45 +231,40 @@ int main() {
             inputPlansza = false;
             inputPolecenia = true;
             polecenie = "";
-            if (iloscB == iloscR || iloscR == iloscB + 1) isBoardCorrect = true;
+            if (nowaPlansza.getB() == nowaPlansza.getR() || nowaPlansza.getB() + 1 == nowaPlansza.getR()) nowaPlansza.setCorrect(true);
 
             //stworzenie koncowej tablicy
             for (int i = 0; i < 2 * MAXSIZE -1; i++){
                 for (int j = 0; j < 2 * MAXSIZE -1; j++){
                     if (hexWTablicy[i][j] != ' ') {
-                        if (i < iloscIinii && j < MAXSIZE) {
-                            tablicaKonc[j][iloscIinii - 1 - i + j] = hexWTablicy[i][j];
+                        if (i < nowaPlansza.getLinie() && j < MAXSIZE) {
+                            nowaPlansza.setPole(hexWTablicy[i][j], j, nowaPlansza.getLinie() - 1 - i + j);
                         } else if (j < MAXSIZE){
-                            tablicaKonc[i - iloscIinii + 1 + j][j] = hexWTablicy[i][j];
+                            nowaPlansza.setPole(hexWTablicy[i][j], i - nowaPlansza.getLinie() + 1 + j, j);
                         }
                     }
                 }
             }
 
-            isGameOver = isGameOverFunction(tablicaKonc, iloscIinii);
-
+            nowaPlansza.setGameOver(isGameOverFunction(&nowaPlansza));
+            nowaPlansza.setPossible(isBoardPossible(&nowaPlansza));
         }
 
         if (ch == '-' && inputPolecenia) {
+            nowaPlansza.wyczyscPlansze();
             inputPolecenia = false;
             inputPlansza = true;
-            iloscIinii = 0;
-            kolumna = 0;
             zmiennaLinii = 0;
-            iloscB = 0;
-            iloscR = 0;
             zmiennaKresek = 0;
+            kolumna = 0;
             koniecRzedow = false;
-            isBoardCorrect = false;
-            zmiennaIloscWygranychPossible = 0;
+            depth = 0;
+            kolej = 0;
+            iloscruchow = 0;
+
             for (int i = 0; i < MAXSIZE * 2 - 1; i++){
                 for (int j = 0; j < MAXSIZE * 2 - 1; j++){
                     hexWTablicy[j][i] = ' ';
-                }
-            }
-            for (int i = 0; i < MAXSIZE; i++){
-                for (int j = 0; j < MAXSIZE; j++){
-                    tablicaKonc[j][i] = ' ';
                 }
             }
         }
@@ -224,7 +280,7 @@ int main() {
 
                 if ((zmiennaKresek == 2 || zmiennaKresek == 3) && !koniecRzedow) {
                     zmiennaLinii++;
-                    iloscIinii = zmiennaLinii;
+                    nowaPlansza.setLinie(zmiennaLinii);
                     koniecRzedow = true;
                 }
                 else if (zmiennaKresek > 3 || (zmiennaKresek == 2 && koniecRzedow)) {
@@ -233,16 +289,16 @@ int main() {
                 zmiennaKresek = 0;
             }
             else if (ch == 'b') {
-                iloscB++;
+                nowaPlansza.setB(nowaPlansza.getB()+1);
                 hexWTablicy[zmiennaLinii-1][kolumna-1] = 'b';
             }
             else if (ch == 'r') {
-                iloscR++;
+                nowaPlansza.setR(nowaPlansza.getR()+1);
                 hexWTablicy[zmiennaLinii-1][kolumna-1] = 'r';
             }
             else if (ch == '>') {
                 if (hexWTablicy[zmiennaLinii -1][kolumna -1] != 'r' && hexWTablicy[zmiennaLinii-1][kolumna -1] != 'b') {
-                    hexWTablicy[zmiennaLinii -1][kolumna -1] = 'n';
+                    hexWTablicy[zmiennaLinii -1][kolumna -1] = 'N';
                 }
             }
         }
@@ -252,59 +308,77 @@ int main() {
             polecenie += ch;
 
             if (polecenie == sizeString){
-                cout << iloscIinii << endl << endl;
+                cout << nowaPlansza.getLinie() << endl << endl;
                 polecenie = "";
             }
             else if (polecenie == pNumString){
-                cout << iloscB + iloscR << std::endl << std::endl;
+                cout << nowaPlansza.getR()+nowaPlansza.getB() << std::endl << std::endl;
                 polecenie = "";
             }
             else if (polecenie == bCorrectString){
-                if (isBoardCorrect) {
+                if (nowaPlansza.getCorrect()) {
                     cout << "YES"<<endl;
                 }
                 else cout << "NO" << endl;
+                polecenie = "";
             }
             else if (polecenie == gameOverString){
-                if (isBoardCorrect){
-                    if (!isGameOver) {
+                if (nowaPlansza.getCorrect()){
+                    if (!nowaPlansza.getGameOver()) {
                         cout << "NO" << endl;
                     }
-                    else if (isGameOver == BLUE) {
+                    else if (nowaPlansza.getGameOver() == BLUE) {
                         cout << "YES BLUE" << endl;
                     }
-                    else if (isGameOver == RED){
+                    else if (nowaPlansza.getGameOver() == RED){
                         cout << "YES RED" << endl;
                     }
                 }
                 else {
                     cout << "NO" << endl;
                 }
+                polecenie = "";
             }
             else if (polecenie == bPossibleString){
-                if (isBoardCorrect){
-                    if (isGameOver > 0){
-                        if ((isGameOver == BLUE && iloscB==iloscR) || (isGameOver== RED && iloscR-1 == iloscB)){
-                            zmienna = (isGameOver == BLUE) ? 'b' : 'r';
-                            iloscPionkowZmienna = (isGameOver == BLUE) ? iloscB : iloscR;
-                            for (int i =0; i < iloscIinii; i++){
-                                for (int j =0; j < iloscIinii; j++){
-                                    if (tablicaKonc[i][j] == zmienna){
-                                        tablicaKonc[i][j] = 'N';
-                                        isGameOver = isGameOverFunction(tablicaKonc, iloscIinii);
-                                        if (isGameOver > 0) zmiennaIloscWygranychPossible++;
-                                        tablicaKonc[i][j] = zmienna;
-                                    }
-                                }
-                            }
-                            if (zmiennaIloscWygranychPossible == iloscPionkowZmienna) cout << "NO" << endl;
-                            else cout << "YES" << endl;
+                if (nowaPlansza.getPossible()) cout << "YES" << endl;
+                else cout << "NO" << endl;
+                polecenie = "";
+            }
+            else if (polecenie == red1NaiveString || polecenie == blue1NaiveString || polecenie == red2NaiveString || polecenie == blue2NaiveString){
+                if (nowaPlansza.getPossible() && nowaPlansza.getGameOver() == 0) {
+                    kolej = (nowaPlansza.getR() == nowaPlansza.getB()) ? RED : BLUE;
+                    int player;
+                    if (polecenie == blue1NaiveString || polecenie == red1NaiveString) {
+                        depth = 1;
+                        if (polecenie == blue1NaiveString){
+                            iloscruchow = (kolej == RED) ? 2 : 1;
+                            player = BLUE;
                         }
+                        else {
+                            iloscruchow = (kolej == RED) ? 1 : 2;
+                            player = RED;
+                        }
+                    }
+                    else {
+                        depth = 2;
+                        if (polecenie == blue2NaiveString){
+                            iloscruchow = (kolej == RED) ? 4 : 3;
+                            player = BLUE;
+                        }
+                        else {
+                            iloscruchow = (kolej == RED) ? 3 : 4;
+                            player = RED;
+                        }
+                    }
+
+                    if (iloscruchow <= nowaPlansza.getLinie() * nowaPlansza.getLinie() - nowaPlansza.getB() - nowaPlansza.getR()) {
+                        if(naive(&nowaPlansza, depth, player)) cout << "YES" << endl;
                         else cout << "NO" << endl;
                     }
-                    else cout << "YES" << endl;
+                    else cout << "NO" << endl;
                 }
                 else cout << "NO" << endl;
+                polecenie = "";
             }
         }
     }
